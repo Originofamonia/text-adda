@@ -37,7 +37,7 @@ def main():
                         help="Specify log step size for adaptation")
     parser.add_argument('--save_step', type=int, default=100,
                         help="Specify save step size for adaptation")
-    parser.add_argument('--model_root', type=str, default='data',
+    parser.add_argument('--model_root', type=str, default='snapshots',
                         help="model_root")
     args = parser.parse_args()
 
