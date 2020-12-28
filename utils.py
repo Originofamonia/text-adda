@@ -32,7 +32,6 @@ def init_random_seed(manual_seed):
 
 
 def init_model(net, restore=None):
-
     # restore model weights
     if restore is not None and os.path.exists(restore):
         net.load_state_dict(torch.load(restore))
@@ -77,10 +76,10 @@ class TextDataset(Dataset):
 
         seq_data = list()
         for sequence in sequences:
-            sequence.insert(0, 101) # insert [CLS] token
+            sequence.insert(0, 101)  # insert [CLS] token
             seqlen = len(sequence)
             if seqlen < maxlen:
-                sequence.extend([0] * (maxlen-seqlen))
+                sequence.extend([0] * (maxlen - seqlen))
             else:
                 sequence = sequence[:maxlen]
             seq_data.append(sequence)

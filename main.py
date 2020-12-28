@@ -1,53 +1,44 @@
 """Main script for ADDA."""
 
 import torch
-from params import param
+from params.param import *
 from core import eval_src, eval_tgt, train_src, train_tgt
 from models import BERTEncoder, BERTClassifier, Discriminator
 from utils import read_data, get_data_loader, init_model, init_random_seed
 from pytorch_pretrained_bert import BertTokenizer
 import argparse
 
-if __name__ == '__main__':
+
+def main():
     # argument parsing
     parser = argparse.ArgumentParser(description="Specify Params for Experimental Setting")
 
     parser.add_argument('--src', type=str, default="books", choices=["books", "dvd", "electronics", "kitchen"],
                         help="Specify src dataset")
-
     parser.add_argument('--tgt', type=str, default="dvd", choices=["books", "dvd", "electronics", "kitchen"],
                         help="Specify tgt dataset")
-
     parser.add_argument('--enc_train', default=False, action='store_true',
                         help='Train source encoder')
-
     parser.add_argument('--seqlen', type=int, default=200,
                         help="Specify maximum sequence length")
-
     parser.add_argument('--patience', type=int, default=5,
                         help="Specify patience of early stopping for pretrain")
-
     parser.add_argument('--num_epochs_pre', type=int, default=200,
                         help="Specify the number of epochs for pretrain")
-
     parser.add_argument('--log_step_pre', type=int, default=1,
                         help="Specify log step size for pretrain")
-
     parser.add_argument('--eval_step_pre', type=int, default=10,
                         help="Specify eval step size for pretrain")
-
     parser.add_argument('--save_step_pre', type=int, default=100,
                         help="Specify save step size for pretrain")
-
     parser.add_argument('--num_epochs', type=int, default=100,
                         help="Specify the number of epochs for adaptation")
-
     parser.add_argument('--log_step', type=int, default=1,
                         help="Specify log step size for adaptation")
-
     parser.add_argument('--save_step', type=int, default=100,
                         help="Specify save step size for adaptation")
-
+    parser.add_argument('--model_root', type=str, default='data',
+                        help="model_root")
     args = parser.parse_args()
 
     # argument setting
@@ -66,7 +57,7 @@ if __name__ == '__main__':
     print("save_step: " + str(args.save_step))
 
     # init random seed
-    init_random_seed(param.manual_seed)
+    init_random_seed(manual_seed)
 
     # preprocess data
     print("=== Processing datasets ===")
@@ -102,7 +93,6 @@ if __name__ == '__main__':
         indexed_tokens = tokenizer.convert_tokens_to_ids(tokenized_text)
         tgt_test_sequences.append(indexed_tokens)
 
-
     # load dataset
     src_data_loader = get_data_loader(src_train_sequences, src_train.label, args.seqlen)
     src_data_loader_eval = get_data_loader(src_test_sequences, src_test.label, args.seqlen)
@@ -113,13 +103,13 @@ if __name__ == '__main__':
 
     # load models
     src_encoder = init_model(BERTEncoder(),
-                             restore=param.src_encoder_restore)
+                             restore=src_encoder_restore)
     src_classifier = init_model(BERTClassifier(),
-                                restore=param.src_classifier_restore)
+                                restore=src_classifier_restore)
     tgt_encoder = init_model(BERTEncoder(),
-                             restore=param.tgt_encoder_restore)
+                             restore=tgt_encoder_restore)
     critic = init_model(Discriminator(),
-                        restore=param.d_model_restore)
+                        restore=d_model_restore)
 
     # freeze encoder params
     if not args.enc_train:
@@ -140,7 +130,7 @@ if __name__ == '__main__':
     # train target encoder by GAN
     print("=== Training encoder for target domain ===")
     if not (tgt_encoder.restored and critic.restored and
-            param.tgt_model_trained):
+            tgt_model_trained):
         tgt_encoder = train_tgt(args, src_encoder, tgt_encoder, critic,
                                 src_data_loader, tgt_data_loader)
 
@@ -150,3 +140,7 @@ if __name__ == '__main__':
     eval_tgt(src_encoder, src_classifier, tgt_data_loader_eval)
     print(">>> domain adaption <<<")
     eval_tgt(tgt_encoder, src_classifier, tgt_data_loader_eval)
+
+
+if __name__ == '__main__':
+    main()
