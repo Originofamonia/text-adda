@@ -4,6 +4,7 @@ import os
 import torch
 import torch.optim as optim
 from torch import nn
+from tqdm import tqdm
 from params import param
 from utils import make_cuda
 
@@ -35,8 +36,8 @@ def train_tgt(args, src_encoder, tgt_encoder, critic,
 
     for epoch in range(args.num_epochs):
         # zip source and target data pair
-        data_zip = enumerate(zip(src_data_loader, tgt_data_loader))
-        for step, ((reviews_src, _), (reviews_tgt, _)) in data_zip:
+        pbar = tqdm(zip(src_data_loader, tgt_data_loader))
+        for step, ((reviews_src, _), (reviews_tgt, _)) in enumerate(pbar):
             ###########################
             # 2.1 train discriminator #
             ###########################
@@ -94,15 +95,14 @@ def train_tgt(args, src_encoder, tgt_encoder, critic,
             # 2.3 print step info #
             #######################
             if (step + 1) % args.log_step == 0:
-                print("Epoch [%.3d/%.3d] Step [%.2d/%.2d]:"
-                      "d_loss=%.4f g_loss=%.4f acc=%.4f"
-                      % (epoch + 1,
-                         args.num_epochs,
-                         step + 1,
-                         len_data_loader,
-                         loss_critic.item(),
-                         loss_tgt.item(),
-                         acc.item()))
+                desc = "Epoch [{}/{}] Step [{}/{}]: d_loss={} g_loss={} acc={}".format(epoch + 1,
+                                                                                       args.num_epochs,
+                                                                                       step + 1,
+                                                                                       len_data_loader,
+                                                                                       loss_critic.item(),
+                                                                                       loss_tgt.item(),
+                                                                                       acc.item())
+                pbar.set_description(desc=desc)
 
         #############################
         # 2.4 save model argseters #

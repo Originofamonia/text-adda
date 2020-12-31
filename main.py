@@ -12,7 +12,6 @@ import argparse
 def main():
     # argument parsing
     parser = argparse.ArgumentParser(description="Specify Params for Experimental Setting")
-
     parser.add_argument('--src', type=str, default="books", choices=["books", "dvd", "electronics", "kitchen"],
                         help="Specify src dataset")
     parser.add_argument('--tgt', type=str, default="dvd", choices=["books", "dvd", "electronics", "kitchen"],
@@ -73,7 +72,7 @@ def main():
     tgt_train_sequences = []
     tgt_test_sequences = []
 
-    for i in range(len(src_train.review)):
+    for i in range(len(src_train.review)):  # 1587
         tokenized_text = tokenizer.tokenize(src_train.review[i])
         indexed_tokens = tokenizer.convert_tokens_to_ids(tokenized_text)
         src_train_sequences.append(indexed_tokens)

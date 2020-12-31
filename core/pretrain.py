@@ -2,6 +2,7 @@
 
 import torch.nn as nn
 import torch.optim as optim
+from tqdm import tqdm
 from params import param
 from utils import save_model
 
@@ -24,13 +25,14 @@ def train_src(args, encoder, classifier, data_loader, data_loader_eval):
     # set train state for Dropout and BN layers
     encoder.train()
     classifier.train()
+    pbar = tqdm(data_loader)
 
     ####################
     # 2. train network #
     ####################
 
     for epoch in range(args.num_epochs_pre):
-        for step, (reviews, labels) in enumerate(data_loader):
+        for step, (reviews, labels) in enumerate(pbar):
 
             # zero gradients for optimizer
             optimizer.zero_grad()
@@ -45,12 +47,12 @@ def train_src(args, encoder, classifier, data_loader, data_loader_eval):
 
             # print step info
             if (step + 1) % args.log_step_pre == 0:
-                print("Epoch [%.3d/%.3d] Step [%.2d/%.2d]: loss=%.4f"
-                      % (epoch + 1,
-                         args.num_epochs_pre,
-                         step + 1,
-                         len(data_loader),
-                         loss.item()))
+                desc = "Epoch [{}/{}] Step [{}/{}]: loss={}".format(epoch + 1,
+                                                                    args.num_epochs_pre,
+                                                                    step + 1,
+                                                                    len(data_loader),
+                                                                    loss.item())
+                pbar.set_description(desc=desc)
 
         # eval model on test set
         if (epoch + 1) % args.eval_step_pre == 0:
@@ -89,7 +91,6 @@ def eval_src(encoder, classifier, data_loader):
 
     # evaluate network
     for (reviews, labels) in data_loader:
-
         preds = classifier(encoder(reviews))
         loss += criterion(preds, labels).item()
 
