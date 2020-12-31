@@ -119,12 +119,12 @@ def main():
     print("=== Training classifier for source domain ===")
     # if not (src_encoder.restored and src_classifier.restored and
     #         param.src_model_trained):
-    src_encoder, src_classifier = train_src(
-        args, src_encoder, src_classifier, src_data_loader, src_data_loader_eval)
+    # src_encoder, src_classifier = train_src(
+    #     args, src_encoder, src_classifier, src_data_loader, src_data_loader_eval)
 
     # eval source model
     print("=== Evaluating classifier for source domain ===")
-    eval_src(src_encoder, src_classifier, src_data_loader_eval)
+    # eval_src(src_encoder, src_classifier, src_data_loader_eval)
 
     # train target encoder by GAN
     print("=== Training encoder for target domain ===")

@@ -95,13 +95,14 @@ def train_tgt(args, src_encoder, tgt_encoder, critic,
             # 2.3 print step info #
             #######################
             if (step + 1) % args.log_step == 0:
-                desc = "Epoch [{}/{}] Step [{}/{}]: d_loss={} g_loss={} acc={}".format(epoch + 1,
-                                                                                       args.num_epochs,
-                                                                                       step + 1,
-                                                                                       len_data_loader,
-                                                                                       loss_critic.item(),
-                                                                                       loss_tgt.item(),
-                                                                                       acc.item())
+                desc = "Epoch [{}/{}] Step [{}/{}]: " \
+                       "d_loss={:.4f} g_loss={:.4f} acc={:.4f}".format(epoch + 1,
+                                                                       args.num_epochs,
+                                                                       step + 1,
+                                                                       len_data_loader,
+                                                                       loss_critic.item(),
+                                                                       loss_tgt.item(),
+                                                                       acc.item())
                 pbar.set_description(desc=desc)
 
         #############################

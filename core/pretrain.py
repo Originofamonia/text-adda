@@ -47,11 +47,11 @@ def train_src(args, encoder, classifier, data_loader, data_loader_eval):
 
             # print step info
             if (step + 1) % args.log_step_pre == 0:
-                desc = "Epoch [{}/{}] Step [{}/{}]: loss={}".format(epoch + 1,
-                                                                    args.num_epochs_pre,
-                                                                    step + 1,
-                                                                    len(data_loader),
-                                                                    loss.item())
+                desc = "Epoch [{}/{}] Step [{}/{}]: loss={:.4f}".format(epoch + 1,
+                                                                        args.num_epochs_pre,
+                                                                        step + 1,
+                                                                        len(data_loader),
+                                                                        loss.item())
                 pbar.set_description(desc=desc)
 
         # eval model on test set
