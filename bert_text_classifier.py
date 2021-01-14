@@ -114,9 +114,9 @@ def main():
                         restore=d_model_restore)
 
     # freeze encoder params
-    # if not args.enc_train:
-    #     for param in src_encoder.parameters():
-    #         param.requires_grad = False
+    if not args.enc_train:
+        for param in src_encoder.parameters():
+            param.requires_grad = True
 
     # train source model
     print("=== Training classifier for source domain ===")
