@@ -26,13 +26,13 @@ def train_src(args, encoder, classifier, data_loader, data_loader_eval):
     # set train state for Dropout and BN layers
     encoder.train()
     classifier.train()
-    pbar = tqdm(data_loader)
 
     ####################
     # 2. train network #
     ####################
 
     for epoch in range(args.num_epochs_pre):
+        pbar = tqdm(data_loader)
         for step, (reviews, labels) in enumerate(pbar):
 
             # zero gradients for optimizer
