@@ -19,7 +19,8 @@ def train_src(args, encoder, classifier, data_loader, data_loader_eval):
     optimizer = optim.Adam(
         list(encoder.parameters()) + list(classifier.parameters()),
         lr=param.c_learning_rate,
-        betas=(param.beta1, param.beta2))
+        # betas=(param.beta1, param.beta2)
+    )
     criterion = nn.CrossEntropyLoss()
 
     # set train state for Dropout and BN layers
@@ -56,7 +57,7 @@ def train_src(args, encoder, classifier, data_loader, data_loader_eval):
 
         # eval model on test set
         if (epoch + 1) % args.eval_step_pre == 0:
-            # print('Epoch [{}/{}]'.format(epoch + 1, param.num_epochs_pre))
+            print('Epoch [{}/{}]'.format(epoch + 1, args.eval_step_pre))
             eval_src(encoder, classifier, data_loader)
             earlystop.update(eval_src(encoder, classifier, data_loader_eval))
 

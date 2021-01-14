@@ -3,7 +3,7 @@
 # params for dataset and data loader
 data_root = "data"
 process_root = "data/processed"
-batch_size = 128
+batch_size = 16
 
 # params for source dataset
 src_encoder_restore = "snapshots/ADDA-source-encoder-final.pt"
@@ -24,6 +24,6 @@ manual_seed = None
 
 # params for optimizing models
 d_learning_rate = 1e-4
-c_learning_rate = 1e-4
+c_learning_rate = 1e-3
 beta1 = 0.5
 beta2 = 0.99
