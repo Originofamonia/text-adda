@@ -59,7 +59,6 @@ def train_src(args, encoder, classifier, data_loader, data_loader_eval):
             # print('Epoch [{}/{}]'.format(epoch + 1, param.num_epochs_pre))
             eval_src(encoder, classifier, data_loader)
             earlystop.update(eval_src(encoder, classifier, data_loader_eval))
-            print()
 
         # save model parameters
         if (epoch + 1) % args.save_step_pre == 0:

@@ -1,8 +1,10 @@
-"""Main script for ADDA."""
+"""
+save encoded features from encoder for visualization.
+"""
 
 import torch
 from params.param import *
-from core import eval_src, eval_tgt, train_src, train_tgt
+from core import eval_src, eval_tgt, train_src, train_tgt, eval_tgt_save_features
 from models import BERTEncoder, BERTClassifier, Discriminator
 from utils import read_data, get_data_loader, init_model, init_random_seed
 from pytorch_pretrained_bert import BertTokenizer
@@ -115,28 +117,12 @@ def main():
         for param in src_encoder.parameters():
             param.requires_grad = False
 
-    # train source model
-    print("=== Training classifier for source domain ===")
-    src_encoder, src_classifier = train_src(
-        args, src_encoder, src_classifier, src_data_loader, src_data_loader_eval)
-
-    # eval source model
-    print("=== Evaluating classifier for source domain ===")
-    eval_src(src_encoder, src_classifier, src_data_loader_eval)
-
-    # train target encoder by GAN
-    print("=== Training encoder for target domain ===")
-    if not (tgt_encoder.restored and critic.restored and
-            tgt_model_trained):
-        tgt_encoder = train_tgt(args, src_encoder, tgt_encoder, critic,
-                                src_data_loader, tgt_data_loader)
-
     # eval target encoder on test set of target dataset
     print("=== Evaluating classifier for encoded target domain ===")
-    print(">>> source only <<<")
-    eval_tgt(src_encoder, src_classifier, tgt_data_loader_eval)
+    # print(">>> source only <<<")
+    # eval_tgt_save_features(src_encoder, src_classifier, tgt_data_loader_eval)
     print(">>> domain adaption <<<")
-    eval_tgt(tgt_encoder, src_classifier, tgt_data_loader_eval)
+    eval_tgt_save_features(tgt_encoder, src_classifier, tgt_data_loader_eval)
 
 
 if __name__ == '__main__':

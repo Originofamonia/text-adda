@@ -1,4 +1,7 @@
-"""Main script for ADDA."""
+"""
+BERT text classification.
+Train BERT on src data. Then save inferred src and tgt data features, see discrepancy between src and tgt features.
+"""
 
 import torch
 from params.param import *
@@ -24,7 +27,7 @@ def main():
                         help="Specify patience of early stopping for pretrain")
     parser.add_argument('--num_epochs_pre', type=int, default=200,
                         help="Specify the number of epochs for pretrain")
-    parser.add_argument('--log_step_pre', type=int, default=1,
+    parser.add_argument('--log_step_pre', type=int, default=10,
                         help="Specify log step size for pretrain")
     parser.add_argument('--eval_step_pre', type=int, default=10,
                         help="Specify eval step size for pretrain")
@@ -32,7 +35,7 @@ def main():
                         help="Specify save step size for pretrain")
     parser.add_argument('--num_epochs', type=int, default=100,
                         help="Specify the number of epochs for adaptation")
-    parser.add_argument('--log_step', type=int, default=1,
+    parser.add_argument('--log_step', type=int, default=10,
                         help="Specify log step size for adaptation")
     parser.add_argument('--save_step', type=int, default=100,
                         help="Specify save step size for adaptation")
@@ -111,9 +114,9 @@ def main():
                         restore=d_model_restore)
 
     # freeze encoder params
-    if not args.enc_train:
-        for param in src_encoder.parameters():
-            param.requires_grad = False
+    # if not args.enc_train:
+    #     for param in src_encoder.parameters():
+    #         param.requires_grad = False
 
     # train source model
     print("=== Training classifier for source domain ===")
@@ -125,18 +128,18 @@ def main():
     eval_src(src_encoder, src_classifier, src_data_loader_eval)
 
     # train target encoder by GAN
-    print("=== Training encoder for target domain ===")
-    if not (tgt_encoder.restored and critic.restored and
-            tgt_model_trained):
-        tgt_encoder = train_tgt(args, src_encoder, tgt_encoder, critic,
-                                src_data_loader, tgt_data_loader)
+    # print("=== Training encoder for target domain ===")
+    # if not (tgt_encoder.restored and critic.restored and
+    #         tgt_model_trained):
+    #     tgt_encoder = train_tgt(args, src_encoder, tgt_encoder, critic,
+    #                             src_data_loader, tgt_data_loader)
 
     # eval target encoder on test set of target dataset
     print("=== Evaluating classifier for encoded target domain ===")
     print(">>> source only <<<")
     eval_tgt(src_encoder, src_classifier, tgt_data_loader_eval)
     print(">>> domain adaption <<<")
-    eval_tgt(tgt_encoder, src_classifier, tgt_data_loader_eval)
+    eval_tgt(src_encoder, src_classifier, tgt_data_loader_eval)
 
 
 if __name__ == '__main__':
