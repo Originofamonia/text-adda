@@ -7,11 +7,8 @@ from params import param
 from utils import save_model
 
 
-def train_src(args, encoder, classifier, data_loader, data_loader_eval):
+def train_src(args, encoder, classifier, train_loader, test_loader):
     """Train classifier for source domain."""
-    ####################
-    # 1. setup network #
-    ####################
     # instantiate EarlyStop
     earlystop = EarlyStop(args.patience)
 
@@ -27,12 +24,8 @@ def train_src(args, encoder, classifier, data_loader, data_loader_eval):
     encoder.train()
     classifier.train()
 
-    ####################
-    # 2. train network #
-    ####################
-
     for epoch in range(args.num_epochs_pre):
-        pbar = tqdm(data_loader)
+        pbar = tqdm(train_loader)
         for step, (reviews, labels) in enumerate(pbar):
 
             # zero gradients for optimizer
@@ -51,15 +44,76 @@ def train_src(args, encoder, classifier, data_loader, data_loader_eval):
                 desc = "Epoch [{}/{}] Step [{}/{}]: loss={:.4f}".format(epoch + 1,
                                                                         args.num_epochs_pre,
                                                                         step + 1,
-                                                                        len(data_loader),
+                                                                        len(train_loader),
                                                                         loss.item())
                 pbar.set_description(desc=desc)
 
         # eval model on test set
         if (epoch + 1) % args.eval_step_pre == 0:
             print('Epoch [{}/{}]'.format(epoch + 1, args.eval_step_pre))
-            eval_src(encoder, classifier, data_loader)
-            earlystop.update(eval_src(encoder, classifier, data_loader_eval))
+            eval_src(encoder, classifier, train_loader)
+            earlystop.update(eval_src(encoder, classifier, test_loader))
+
+        # save model parameters
+        if (epoch + 1) % args.save_step_pre == 0:
+            save_model(encoder, "ADDA-source-encoder-{}.pt".format(epoch + 1))
+            save_model(classifier, "ADDA-source-classifier-{}.pt".format(epoch + 1))
+
+        if earlystop.stop:
+            break
+
+    # # save final model
+    save_model(encoder, "ADDA-source-encoder-final.pt")
+    save_model(classifier, "ADDA-source-classifier-final.pt")
+
+    return encoder, classifier
+
+
+def train_no_da(args, encoder, classifier, train_loader, test_loader):
+    """Train without DA"""
+    # instantiate EarlyStop
+    earlystop = EarlyStop(args.patience)
+
+    # setup criterion and optimizer
+    optimizer = optim.Adam(
+        list(encoder.parameters()) + list(classifier.parameters()),
+        lr=param.c_learning_rate,
+        # betas=(param.beta1, param.beta2)
+    )
+    criterion = nn.CrossEntropyLoss()
+
+    # set train state for Dropout and BN layers
+    encoder.train()
+    classifier.train()
+
+    for epoch in range(args.num_epochs_pre):
+        pbar = tqdm(train_loader)
+        for step, (reviews, labels) in enumerate(pbar):
+
+            optimizer.zero_grad()
+
+            # compute loss for critic
+            preds = classifier(encoder(reviews))
+            loss = criterion(preds, labels)
+
+            # optimize source classifier
+            loss.backward()
+            optimizer.step()
+
+            # print step info
+            if (step + 1) % args.log_step_pre == 0:
+                desc = "Epoch {}/{} Step {}/{}: loss={:.4f}".format(epoch + 1,
+                                                                    args.num_epochs_pre,
+                                                                    step + 1,
+                                                                    len(train_loader),
+                                                                    loss.item())
+                pbar.set_description(desc=desc)
+
+        # eval model on test set
+        if (epoch + 1) % args.eval_step_pre == 0:
+            print('Epoch [{}/{}]'.format(epoch + 1, args.eval_step_pre))
+            eval_src(encoder, classifier, train_loader)
+            earlystop.update(eval_src(encoder, classifier, test_loader))
 
         # save model parameters
         if (epoch + 1) % args.save_step_pre == 0:

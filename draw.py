@@ -3,11 +3,12 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 import pandas as pd
+from sklearn.mixture import GaussianMixture
 
 
-def read_features():
-    filename = 'snapshots/features.npz'
-    npzfile = np.load(filename)
+def read_features(feature_name):
+    # filename = 'snapshots/features.npz'
+    npzfile = np.load(feature_name)
     return npzfile['arr_0'], npzfile['arr_1']
 
 
@@ -34,7 +35,7 @@ def draw_bert_features_pca(x, y):
     plt.show()
 
 
-def draw_bert_features_tsne(x, y):
+def draw_bert_features_tsne(x, y, feature_name):
     tsne = TSNE(2)
     principal_components = tsne.fit_transform(x)
     dataframe = pd.DataFrame(data=y, columns=['digit'])
@@ -57,10 +58,20 @@ def draw_bert_features_tsne(x, y):
     plt.show()
 
 
+def build_gmm(x, y):
+    gmm = GaussianMixture(n_components=4).fit(x, y)
+    labels = gmm.predict(x)
+    counts = labels == y
+    counts_wrong = np.unique(counts, return_counts=True)
+    print(counts_wrong)
+
+
 def main():
-    x, y = read_features()
-    draw_bert_features_tsne(x, y)
+    feature_name = 'snapshots/src_books_features.npz'
+    x, y = read_features(feature_name)
+    # draw_bert_features_tsne(x, y, feature_name)
     # draw_bert_features_pca(x, y)
+    build_gmm(x, y)
 
 
 if __name__ == '__main__':

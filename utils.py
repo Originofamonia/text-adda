@@ -54,13 +54,13 @@ def save_model(net, filename):
                                                              filename)))
 
 
-def get_data_loader(sequences, labels, maxlen=None):
+def get_data_loader(sequences, labels, args):
     # dataset and data loader
-    text_dataset = TextDataset(sequences, labels, maxlen)
+    text_dataset = TextDataset(sequences, labels, args.seqlen)
 
     text_data_loader = DataLoader(
         dataset=text_dataset,
-        batch_size=param.batch_size,
+        batch_size=args.batch_size,
         shuffle=True)
 
     return text_data_loader

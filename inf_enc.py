@@ -1,11 +1,11 @@
 """
-BERT text classification.
-Train BERT on src data. Then save inferred src and tgt data features, see discrepancy between src and tgt features.
+Inference trained encoder (classifier);
+save encoded features from encoder for visualization.
 """
 
 import torch
 from params.param import *
-from core import eval_src, eval_tgt, train_src, train_tgt
+from core import eval_src, eval_tgt, train_src, train_tgt, eval_tgt_save_features
 from models import BERTEncoder, BERTClassifier, Discriminator
 from utils import read_data, get_data_loader, init_model, init_random_seed
 from pytorch_pretrained_bert import BertTokenizer
@@ -27,15 +27,15 @@ def main():
                         help="Specify patience of early stopping for pretrain")
     parser.add_argument('--num_epochs_pre', type=int, default=200,
                         help="Specify the number of epochs for pretrain")
-    parser.add_argument('--log_step_pre', type=int, default=10,
+    parser.add_argument('--log_step_pre', type=int, default=1,
                         help="Specify log step size for pretrain")
-    parser.add_argument('--eval_step_pre', type=int, default=5,
+    parser.add_argument('--eval_step_pre', type=int, default=10,
                         help="Specify eval step size for pretrain")
     parser.add_argument('--save_step_pre', type=int, default=100,
                         help="Specify save step size for pretrain")
     parser.add_argument('--num_epochs', type=int, default=100,
                         help="Specify the number of epochs for adaptation")
-    parser.add_argument('--log_step', type=int, default=10,
+    parser.add_argument('--log_step', type=int, default=1,
                         help="Specify log step size for adaptation")
     parser.add_argument('--save_step', type=int, default=100,
                         help="Specify save step size for adaptation")
@@ -104,42 +104,28 @@ def main():
     print("=== Datasets successfully loaded ===")
 
     # load models
+    src_encoder_file = "snapshots/src-encoder.pt"
+    src_classifier_file = "snapshots/src-classifier.pt"
     src_encoder = init_model(BERTEncoder(),
-                             restore=src_encoder_restore)
-    src_classifier = init_model(BERTClassifier(),
-                                restore=src_classifier_restore)
-    tgt_encoder = init_model(BERTEncoder(),
-                             restore=tgt_encoder_restore)
-    critic = init_model(Discriminator(),
-                        restore=d_model_restore)
+                             restore=src_encoder_file)
+    # src_classifier = init_model(BERTClassifier(),
+    #                             restore=src_classifier_file)
+    # tgt_encoder = init_model(BERTEncoder(),
+    #                          restore=tgt_encoder_restore)
+    # critic = init_model(Discriminator(),
+    #                     restore=d_model_restore)
 
     # freeze encoder params
-    if not args.enc_train:
-        for param in src_encoder.parameters():
-            param.requires_grad = True
-
-    # train source model
-    print("=== Training classifier for source domain ===")
-    src_encoder, src_classifier = train_src(
-        args, src_encoder, src_classifier, src_data_loader, src_data_loader_eval)
-
-    # eval source model
-    print("=== Evaluating classifier for source domain ===")
-    eval_src(src_encoder, src_classifier, src_data_loader_eval)
-
-    # train target encoder by GAN
-    # print("=== Training encoder for target domain ===")
-    # if not (tgt_encoder.restored and critic.restored and
-    #         tgt_model_trained):
-    #     tgt_encoder = train_tgt(args, src_encoder, tgt_encoder, critic,
-    #                             src_data_loader, tgt_data_loader)
+    # if not args.enc_train:
+    #     for param in src_encoder.parameters():
+    #         param.requires_grad = False
 
     # eval target encoder on test set of target dataset
     print("=== Evaluating classifier for encoded target domain ===")
-    print(">>> source only <<<")
-    eval_tgt(src_encoder, src_classifier, tgt_data_loader_eval)
-    print(">>> domain adaption <<<")
-    eval_tgt(src_encoder, src_classifier, tgt_data_loader_eval)
+    feature_name = 'snapshots/tgt_dvd_features'
+    eval_tgt_save_features(src_encoder, tgt_data_loader_eval, feature_name)
+    # print(">>> domain adaption <<<")
+    # eval_tgt_save_features(tgt_encoder, src_classifier, tgt_data_loader_eval)
 
 
 if __name__ == '__main__':

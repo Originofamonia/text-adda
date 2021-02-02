@@ -30,14 +30,13 @@ def eval_tgt(encoder, classifier, data_loader):
     print("Avg Loss = %.4f, Avg Accuracy = %.4f" % (loss, acc))
 
 
-def eval_tgt_save_features(encoder, classifier, data_loader):
+def eval_tgt_save_features(encoder, data_loader, feature_name):
     """
     Evaluation for target encoder by source classifier on target dataset.
     Save features after encoder for visualization.
     """
     # set eval state for Dropout and BN layers
     encoder.eval()
-    classifier.eval()
 
     feat_list = []
     label_list = []
@@ -48,4 +47,4 @@ def eval_tgt_save_features(encoder, classifier, data_loader):
 
     features_npy = np.vstack(feat_list)
     labels_npy = np.hstack(label_list)
-    np.savez('snapshots/features', features_npy, labels_npy)
+    np.savez(feature_name, features_npy, labels_npy)
