@@ -31,7 +31,7 @@ def arguments():
                         help="learning_rate")
     parser.add_argument('--patience', type=int, default=5,
                         help="Specify patience of early stopping for pretrain")
-    parser.add_argument('--num_epochs', type=int, default=200,
+    parser.add_argument('--num_epochs', type=int, default=100,
                         help="Specify the number of epochs for train")
     parser.add_argument('--log_step_pre', type=int, default=1,
                         help="Specify log step size for pretrain")
@@ -129,12 +129,11 @@ def main():
         args, src_encoder, src_classifier, src_train_loader, src_test_loader)
 
     # eval source model
-    print("=== Evaluating classifier for source domain ===")
+    print("Evaluate classifier for source domain: {}".format(args.src))
     eval_src(src_encoder, src_classifier, src_test_loader)
 
     # eval target encoder on test set of target dataset
-    print("=== Evaluating classifier for encoded target domain ===")
-    print(">>> domain adaption <<<")
+    print("Evaluate classifier for encoded target domain: {}".format(args.tgt))
     eval_tgt(src_encoder, src_classifier, tgt_test_loader)
 
 
