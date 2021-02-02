@@ -27,20 +27,18 @@ def arguments():
                         help="Specify maximum sequence length")
     parser.add_argument('--batch_size', type=int, default=16,
                         help="batch size")
-    parser.add_argument('--lr', type=float, default=5e-5,
+    parser.add_argument('--lr', type=float, default=3e-5,
                         help="learning_rate")
     parser.add_argument('--patience', type=int, default=5,
                         help="Specify patience of early stopping for pretrain")
-    parser.add_argument('--num_epochs_pre', type=int, default=200,
-                        help="Specify the number of epochs for pretrain")
+    parser.add_argument('--num_epochs', type=int, default=200,
+                        help="Specify the number of epochs for train")
     parser.add_argument('--log_step_pre', type=int, default=1,
                         help="Specify log step size for pretrain")
     parser.add_argument('--eval_step_pre', type=int, default=10,
                         help="Specify eval step size for pretrain")
     parser.add_argument('--save_step_pre', type=int, default=100,
                         help="Specify save step size for pretrain")
-    parser.add_argument('--num_epochs', type=int, default=100,
-                        help="Specify the number of epochs for adaptation")
     parser.add_argument('--log_step', type=int, default=1,
                         help="Specify log step size for adaptation")
     parser.add_argument('--save_step', type=int, default=100,
@@ -121,7 +119,6 @@ def main():
     print("tgt: " + args.tgt)
     print("enc_train: " + str(args.enc_train))
     print("seqlen: " + str(args.seqlen))
-    print("num_epochs_pre: " + str(args.num_epochs_pre))
     print("num_epochs: " + str(args.num_epochs))
     print("batch_size: " + str(args.batch_size))
     print("learning_rate: " + str(args.lr))
