@@ -77,7 +77,7 @@ def train_no_da(args, encoder, classifier, train_loader, test_loader):
     # setup criterion and optimizer
     optimizer = optim.Adam(
         list(encoder.parameters()) + list(classifier.parameters()),
-        lr=param.c_learning_rate,
+        lr=args.lr,
         # betas=(param.beta1, param.beta2)
     )
     criterion = nn.CrossEntropyLoss()

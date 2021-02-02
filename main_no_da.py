@@ -25,8 +25,10 @@ def arguments():
                         help='Train source encoder')
     parser.add_argument('--seqlen', type=int, default=200,
                         help="Specify maximum sequence length")
-    parser.add_argument('--batch_size', type=int, default=64,
+    parser.add_argument('--batch_size', type=int, default=16,
                         help="batch size")
+    parser.add_argument('--lr', type=float, default=5e-5,
+                        help="learning_rate")
     parser.add_argument('--patience', type=int, default=5,
                         help="Specify patience of early stopping for pretrain")
     parser.add_argument('--num_epochs_pre', type=int, default=200,
@@ -90,16 +92,6 @@ def get_dataset(args):
 def main():
     args = arguments()
 
-    # argument setting
-    print("=== Argument Setting ===")
-    print("src: " + args.src)
-    print("tgt: " + args.tgt)
-    print("enc_train: " + str(args.enc_train))
-    print("seqlen: " + str(args.seqlen))
-    print("num_epochs_pre: " + str(args.num_epochs_pre))
-    print("num_epochs: " + str(args.num_epochs))
-    print("batch_size: " + str(args.batch_size))
-
     # init random seed
     init_random_seed(manual_seed)
 
@@ -113,15 +105,26 @@ def main():
     src_classifier = init_model(BERTClassifier(),
                                 restore=src_classifier_restore)
 
-    if torch.cuda.device_count() > 1:
-        print('Let\'s use {} GPUs!'.format(torch.cuda.device_count()))
-        src_encoder = nn.DataParallel(src_encoder)
-        src_classifier = nn.DataParallel(src_classifier)
+    # if torch.cuda.device_count() > 1:
+    #     print('Let\'s use {} GPUs!'.format(torch.cuda.device_count()))
+    #     src_encoder = nn.DataParallel(src_encoder)
+    #     src_classifier = nn.DataParallel(src_classifier)
 
     # enable encoder params: we should train encoder
     if not args.enc_train:
         for param in src_encoder.parameters():
             param.requires_grad = True
+
+    # argument setting
+    print("=== Argument Setting ===")
+    print("src: " + args.src)
+    print("tgt: " + args.tgt)
+    print("enc_train: " + str(args.enc_train))
+    print("seqlen: " + str(args.seqlen))
+    print("num_epochs_pre: " + str(args.num_epochs_pre))
+    print("num_epochs: " + str(args.num_epochs))
+    print("batch_size: " + str(args.batch_size))
+    print("learning_rate: " + str(args.lr))
 
     # train source model
     print("=== Training classifier for source domain ===")
