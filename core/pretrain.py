@@ -101,17 +101,17 @@ def train_no_da(args, encoder, classifier, train_loader, test_loader):
             optimizer.step()
 
             # print step info
-            if (step + 1) % args.log_step_pre == 0:
-                desc = "Epoch {}/{} Step {}/{}: loss={:.4f}".format(epoch + 1,
+            if step % args.log_step_pre == 0:
+                desc = "Epoch {}/{} Step {}/{}: loss={:.4f}".format(epoch,
                                                                     args.num_epochs,
-                                                                    step + 1,
+                                                                    step,
                                                                     len(train_loader),
                                                                     loss.item())
                 pbar.set_description(desc=desc)
 
         # eval model on test set
-        if (epoch + 1) % args.eval_step_pre == 0:
-            print('Epoch [{}/{}]'.format(epoch + 1, args.eval_step_pre))
+        if epoch % args.eval_step_pre == 0:
+            print('Epoch [{}/{}]'.format(epoch, args.eval_step_pre))
             eval_src(encoder, classifier, train_loader)
             earlystop.update(eval_src(encoder, classifier, test_loader))
 

@@ -27,7 +27,7 @@ def arguments():
                         help="Specify maximum sequence length")
     parser.add_argument('--batch_size', type=int, default=16,
                         help="batch size")
-    parser.add_argument('--lr', type=float, default=3e-5,
+    parser.add_argument('--lr', type=float, default=1e-5,
                         help="learning_rate")
     parser.add_argument('--patience', type=int, default=5,
                         help="Specify patience of early stopping for pretrain")
@@ -35,7 +35,7 @@ def arguments():
                         help="Specify the number of epochs for train")
     parser.add_argument('--log_step_pre', type=int, default=1,
                         help="Specify log step size for pretrain")
-    parser.add_argument('--eval_step_pre', type=int, default=10,
+    parser.add_argument('--eval_step_pre', type=int, default=5,
                         help="Specify eval step size for pretrain")
     parser.add_argument('--save_step_pre', type=int, default=100,
                         help="Specify save step size for pretrain")
