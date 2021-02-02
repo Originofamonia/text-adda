@@ -6,8 +6,8 @@ process_root = "data/processed"
 # batch_size = 1
 
 # params for source dataset
-src_encoder_restore = "snapshots/ADDA-source-encoder-final.pt"
-src_classifier_restore = "snapshots/ADDA-source-classifier-final.pt"
+# src_encoder_restore = "snapshots/ADDA-source-encoder-final.pt"
+# src_classifier_restore = "snapshots/ADDA-source-classifier-final.pt"
 src_model_trained = True
 
 # params for target dataset
@@ -19,7 +19,7 @@ model_root = "snapshots"
 d_model_restore = "snapshots/ADDA-critic-final.pt"
 
 # params for training network
-num_gpu = 1
+# num_gpu = 1
 manual_seed = None
 
 # params for optimizing models

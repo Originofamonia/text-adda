@@ -21,8 +21,8 @@ def arguments():
                         help="Specify src dataset")
     parser.add_argument('--tgt', type=str, default="electronics", choices=["books", "dvd", "electronics", "kitchen"],
                         help="Specify tgt dataset")
-    parser.add_argument('--enc_train', default=False, action='store_true',
-                        help='Train source encoder')
+    parser.add_argument('--enc_train', type=bool, default=False,
+                        help='Train source encoder and classifier')
     parser.add_argument('--seqlen', type=int, default=200,
                         help="Specify maximum sequence length")
     parser.add_argument('--batch_size', type=int, default=16,
@@ -96,7 +96,8 @@ def main():
     src_train_loader, src_test_loader, tgt_train_loader, tgt_test_loader = get_dataset(args)
 
     print("=== Datasets successfully loaded ===")
-
+    src_encoder_restore = "snapshots/src-encoder-{}.pt".format(args.src)
+    src_classifier_restore = "snapshots/src-classifier-{}.pt".format(args.src)
     # load models
     src_encoder = init_model(BERTEncoder(),
                              restore=src_encoder_restore)
@@ -108,25 +109,23 @@ def main():
     #     src_encoder = nn.DataParallel(src_encoder)
     #     src_classifier = nn.DataParallel(src_classifier)
 
-    # enable encoder params: we should train encoder
-    if not args.enc_train:
-        for param in src_encoder.parameters():
-            param.requires_grad = True
-
     # argument setting
     print("=== Argument Setting ===")
     print("src: " + args.src)
     print("tgt: " + args.tgt)
-    print("enc_train: " + str(args.enc_train))
     print("seqlen: " + str(args.seqlen))
     print("num_epochs: " + str(args.num_epochs))
     print("batch_size: " + str(args.batch_size))
     print("learning_rate: " + str(args.lr))
 
-    # train source model
-    print("=== Training classifier for source domain ===")
-    src_encoder, src_classifier = train_no_da(
-        args, src_encoder, src_classifier, src_train_loader, src_test_loader)
+    if args.enc_train:
+        for param in src_encoder.parameters():
+            param.requires_grad = True
+
+        # train source model
+        print("=== Training classifier for source domain ===")
+        src_encoder, src_classifier = train_no_da(
+            args, src_encoder, src_classifier, src_train_loader, src_test_loader)
 
     # eval source model
     print("Evaluate classifier for source domain: {}".format(args.src))
