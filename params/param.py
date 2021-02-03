@@ -11,7 +11,7 @@ process_root = "data/processed"
 src_model_trained = True
 
 # params for target dataset
-tgt_encoder_restore = "snapshots/ADDA-target-encoder-final.pt"
+# tgt_encoder_restore = "snapshots/ADDA-target-encoder-final.pt"
 tgt_model_trained = True
 
 # params for setting up models

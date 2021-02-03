@@ -15,7 +15,7 @@ def train_src(args, encoder, classifier, train_loader, test_loader):
     # setup criterion and optimizer
     optimizer = optim.Adam(
         list(encoder.parameters()) + list(classifier.parameters()),
-        lr=param.c_learning_rate,
+        lr=args.lr,
         # betas=(param.beta1, param.beta2)
     )
     criterion = nn.CrossEntropyLoss()
@@ -40,31 +40,26 @@ def train_src(args, encoder, classifier, train_loader, test_loader):
             optimizer.step()
 
             # print step info
-            if (step + 1) % args.log_step_pre == 0:
-                desc = "Epoch [{}/{}] Step [{}/{}]: loss={:.4f}".format(epoch + 1,
+            if step % args.log_step_pre == 0:
+                desc = "Epoch [{}/{}] Step [{}/{}]: loss={:.4f}".format(epoch,
                                                                         args.num_epochs_pre,
-                                                                        step + 1,
+                                                                        step,
                                                                         len(train_loader),
                                                                         loss.item())
                 pbar.set_description(desc=desc)
 
         # eval model on test set
-        if (epoch + 1) % args.eval_step_pre == 0:
-            print('Epoch [{}/{}]'.format(epoch + 1, args.eval_step_pre))
+        if epoch % args.eval_step_pre == 0:
+            print('Epoch [{}/{}]'.format(epoch, args.eval_step_pre))
             eval_src(encoder, classifier, train_loader)
             earlystop.update(eval_src(encoder, classifier, test_loader))
-
-        # save model parameters
-        if (epoch + 1) % args.save_step_pre == 0:
-            save_model(encoder, "ADDA-source-encoder-{}.pt".format(epoch + 1))
-            save_model(classifier, "ADDA-source-classifier-{}.pt".format(epoch + 1))
 
         if earlystop.stop:
             break
 
     # # save final model
-    save_model(encoder, "ADDA-source-encoder-final.pt")
-    save_model(classifier, "ADDA-source-classifier-final.pt")
+    save_model(encoder, "ADDA-src-encoder-{}.pt".format(args.src))
+    save_model(classifier, "ADDA-src-classifier-{}.pt".format(args.src))
 
     return encoder, classifier
 
