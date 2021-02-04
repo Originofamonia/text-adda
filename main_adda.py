@@ -61,7 +61,7 @@ def get_arguments():
                         help="Specify patience of early stopping for pretrain")
     parser.add_argument('--num_epochs_pre', type=int, default=100,
                         help="Specify the number of epochs for pretrain")
-    parser.add_argument('--batch_size', type=int, default=16,
+    parser.add_argument('--batch_size', type=int, default=32,
                         help="batch size")
     parser.add_argument('--lr', type=float, default=1e-5,
                         help="learning_rate")
@@ -129,6 +129,8 @@ def main():
         print('Let\'s use {} GPUs!'.format(torch.cuda.device_count()))
         src_encoder = nn.DataParallel(src_encoder)
         src_classifier = nn.DataParallel(src_classifier)
+        tgt_encoder = nn.DataParallel(tgt_encoder)
+        critic = nn.DataParallel(critic)
 
     # train source model
     print("=== Training classifier for source domain ===")
