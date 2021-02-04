@@ -91,21 +91,17 @@ def main():
 
     src_data_loader, src_data_loader_eval, tgt_data_loader, tgt_data_loader_eval = get_dataset(args)
 
-    print("=== Datasets successfully loaded ===")
     # argument setting
     print("=== Argument Setting ===")
     print("src: " + args.src)
     print("tgt: " + args.tgt)
-    print("enc_train: " + str(args.enc_train))
-    print("seqlen: " + str(args.seqlen))
     print("patience: " + str(args.patience))
     print("num_epochs_pre: " + str(args.num_epochs_pre))
-    print("log_step_pre: " + str(args.log_step_pre))
     print("eval_step_pre: " + str(args.eval_step_pre))
     print("save_step_pre: " + str(args.save_step_pre))
     print("num_epochs: " + str(args.num_epochs))
-    print("log_step: " + str(args.log_step))
-    print("save_step: " + str(args.save_step))
+    print("lr: " + str(args.lr))
+    print("batch_size: " + str(args.batch_size))
 
     # load models
     src_encoder_restore = "snapshots/src-encoder-adda-{}.pt".format(args.src)
@@ -143,7 +139,7 @@ def main():
 
     # train target encoder by GAN
     print("=== Training encoder for target domain ===")
-    if not (tgt_encoder.restored and critic.restored and
+    if not (tgt_encoder.module.restored and critic.module.restored and
             tgt_model_trained):
         tgt_encoder = train_tgt(args, src_encoder, tgt_encoder, critic,
                                 src_data_loader, tgt_data_loader)
