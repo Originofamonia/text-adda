@@ -113,6 +113,7 @@ def main():
     src_encoder_restore = "snapshots/src-encoder-adda-{}.pt".format(args.src)
     src_classifier_restore = "snapshots/src-classifier-adda-{}.pt".format(args.src)
     tgt_encoder_restore = "snapshots/tgt-encoder-adda-{}.pt".format(args.src)
+    d_model_restore = "snapshots/critic-adda-{}.pt".format(args.src)
     src_encoder = init_model(BERTEncoder(),
                              restore=src_encoder_restore)
     src_classifier = init_model(BERTClassifier(),
