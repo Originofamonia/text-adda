@@ -12,9 +12,6 @@ from utils import make_cuda
 def train_tgt(args, src_encoder, tgt_encoder, critic,
               src_data_loader, tgt_data_loader):
     """Train encoder for target domain."""
-    ####################
-    # 1. setup network #
-    ####################
 
     # set train state for Dropout and BN layers
     tgt_encoder.train()
@@ -23,24 +20,17 @@ def train_tgt(args, src_encoder, tgt_encoder, critic,
     # setup criterion and optimizer
     criterion = nn.CrossEntropyLoss()
     optimizer_tgt = optim.Adam(tgt_encoder.parameters(),
-                               lr=args.lr,
-                               betas=(param.beta1, param.beta2))
+                               lr=args.c_lr,
+                               betas=(args.beta1, args.beta2))
     optimizer_critic = optim.Adam(critic.parameters(),
-                                  lr=param.d_learning_rate,
-                                  betas=(param.beta1, param.beta2))
+                                  lr=args.d_lr,
+                                  betas=(args.beta1, args.beta2))
     len_data_loader = min(len(src_data_loader), len(tgt_data_loader))
-
-    ####################
-    # 2. train network #
-    ####################
 
     for epoch in range(args.num_epochs):
         # zip source and target data pair
         pbar = tqdm(zip(src_data_loader, tgt_data_loader))
         for step, ((reviews_src, _), (reviews_tgt, _)) in enumerate(pbar):
-            ###########################
-            # 2.1 train discriminator #
-            ###########################
 
             # zero gradients for optimizer
             optimizer_critic.zero_grad()
