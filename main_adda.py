@@ -51,7 +51,7 @@ def get_arguments():
     parser = argparse.ArgumentParser(description="Specify Params for Experimental Setting")
     parser.add_argument('--src', type=str, default="books", choices=["books", "dvd", "electronics", "kitchen"],
                         help="Specify src dataset")
-    parser.add_argument('--tgt', type=str, default="books", choices=["books", "dvd", "electronics", "kitchen"],
+    parser.add_argument('--tgt', type=str, default="dvd", choices=["books", "dvd", "electronics", "kitchen"],
                         help="Specify tgt dataset")
     parser.add_argument('--enc_train', default=False, action='store_true',
                         help='Train source encoder')
