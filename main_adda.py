@@ -64,9 +64,9 @@ def get_arguments():
     parser.add_argument('--batch_size', type=int, default=16,
                         help="batch size")
     parser.add_argument('--lr', type=float, default=1e-5,
-                        help="learning_rate")
-    parser.add_argument('--c_lr', type=float, default=1e-4, help="c learning rate")
-    parser.add_argument('--d_lr', type=float, default=1e-4, help="d learning rate")
+                        help="src encoder lr")
+    # parser.add_argument('--t_lr', type=float, default=1e-4, help="tgt encoder lr")
+    parser.add_argument('--c_lr', type=float, default=1e-3, help="critic lr")
     parser.add_argument('--beta1', type=float, default=0.5, help="beta1")
     parser.add_argument('--beta2', type=float, default=0.99, help="beta2")
     parser.add_argument('--log_step_pre', type=int, default=1,
@@ -104,9 +104,9 @@ def main():
     print("eval_step_pre: " + str(args.eval_step_pre))
     print("save_step_pre: " + str(args.save_step_pre))
     print("num_epochs: " + str(args.num_epochs))
-    print("lr: " + str(args.lr))
-    print("c_lr: " + str(args.c_lr))
-    print("d_lr: " + str(args.d_lr))
+    print("src encoder lr: " + str(args.lr))
+    # print("tgt encoder lr: " + str(args.t_lr))
+    print("critic lr: " + str(args.c_lr))
     print("batch_size: " + str(args.batch_size))
 
     # load models
@@ -152,7 +152,7 @@ def main():
                                 src_data_loader, tgt_data_loader)
 
     # eval target encoder on test set of target dataset
-    print("Evaluate tgt test data on src encoder: {}".format(args.src))
+    print("Evaluate tgt test data on src encoder: {}".format(args.tgt))
     eval_tgt(src_encoder, src_classifier, tgt_data_loader_eval)
     print("Evaluate tgt test data on tgt encoder: {}".format(args.tgt))
     eval_tgt(tgt_encoder, src_classifier, tgt_data_loader_eval)

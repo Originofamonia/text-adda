@@ -20,11 +20,11 @@ def train_tgt(args, src_encoder, tgt_encoder, critic,
     # setup criterion and optimizer
     criterion = nn.CrossEntropyLoss()
     optimizer_tgt = optim.Adam(tgt_encoder.parameters(),
-                               lr=args.c_lr,)
-                               # betas=(args.beta1, args.beta2))
+                               lr=args.lr, )
+    # betas=(args.beta1, args.beta2))
     optimizer_critic = optim.Adam(critic.parameters(),
-                                  lr=args.d_lr,)
-                                  # betas=(args.beta1, args.beta2))
+                                  lr=args.c_lr, )
+    # betas=(args.beta1, args.beta2))
     len_data_loader = min(len(src_data_loader), len(tgt_data_loader))
 
     for epoch in range(args.num_epochs):
@@ -58,10 +58,6 @@ def train_tgt(args, src_encoder, tgt_encoder, critic,
             pred_cls = torch.squeeze(pred_concat.max(1)[1])
             acc = (pred_cls == label_concat).float().mean()
 
-            ############################
-            # 2.2 train target encoder #
-            ############################
-
             # zero gradients for optimizer
             optimizer_tgt.zero_grad()
 
@@ -81,35 +77,19 @@ def train_tgt(args, src_encoder, tgt_encoder, critic,
             # optimize target encoder
             optimizer_tgt.step()
 
-            #######################
-            # 2.3 print step info #
-            #######################
             if (step + 1) % args.log_step == 0:
-                desc = "Epoch [{}/{}] Step [{}/{}]: " \
-                       "d_loss={:.4f} g_loss={:.4f} acc={:.4f}".format(epoch + 1,
-                                                                       args.num_epochs,
-                                                                       step + 1,
-                                                                       len_data_loader,
-                                                                       loss_critic.item(),
-                                                                       loss_tgt.item(),
-                                                                       acc.item())
+                desc = "Epoch [{}/{}] Step [{}/{}]: t_loss={:.4f} c_loss={:.4f} " \
+                       "acc={:.4f}".format(epoch,
+                                           args.num_epochs,
+                                           step,
+                                           len_data_loader,
+                                           loss_tgt.item(),
+                                           loss_critic.item(),
+                                           acc.item())
                 pbar.set_description(desc=desc)
 
-        #############################
-        # 2.4 save model argseters #
-        #############################
-        if (epoch + 1) % args.save_step == 0:
-            torch.save(critic.state_dict(), os.path.join(
-                args.model_root,
-                "ADDA-critic-{}.pt".format(epoch + 1)))
-            torch.save(tgt_encoder.state_dict(), os.path.join(
-                args.model_root,
-                "ADDA-target-encoder-{}.pt".format(epoch + 1)))
-
     torch.save(critic.state_dict(), os.path.join(
-        args.model_root,
-        "ADDA-critic-final.pt"))
+        args.model_root, "ADDA-critic.pt"))
     torch.save(tgt_encoder.state_dict(), os.path.join(
-        args.model_root,
-        "ADDA-target-encoder-final.pt"))
+        args.model_root, "ADDA-target-encoder.pt"))
     return tgt_encoder
