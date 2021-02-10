@@ -65,8 +65,8 @@ def get_arguments():
                         help="batch size")
     parser.add_argument('--lr', type=float, default=1e-5,
                         help="src encoder lr")
-    # parser.add_argument('--t_lr', type=float, default=1e-4, help="tgt encoder lr")
-    parser.add_argument('--c_lr', type=float, default=1e-3, help="critic lr")
+    parser.add_argument('--t_lr', type=float, default=1e-5, help="tgt encoder lr")
+    parser.add_argument('--c_lr', type=float, default=1e-4, help="critic lr")
     parser.add_argument('--beta1', type=float, default=0.5, help="beta1")
     parser.add_argument('--beta2', type=float, default=0.99, help="beta2")
     parser.add_argument('--log_step_pre', type=int, default=1,
@@ -105,7 +105,7 @@ def main():
     print("save_step_pre: " + str(args.save_step_pre))
     print("num_epochs: " + str(args.num_epochs))
     print("src encoder lr: " + str(args.lr))
-    # print("tgt encoder lr: " + str(args.t_lr))
+    print("tgt encoder lr: " + str(args.t_lr))
     print("critic lr: " + str(args.c_lr))
     print("batch_size: " + str(args.batch_size))
 
