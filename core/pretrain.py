@@ -58,8 +58,8 @@ def train_src(args, encoder, classifier, train_loader, test_loader):
             break
 
     # # save final model
-    save_model(encoder, "ADDA-src-encoder-{}.pt".format(args.src))
-    save_model(classifier, "ADDA-src-classifier-{}.pt".format(args.src))
+    # save_model(encoder, "ADDA-src-encoder-{}.pt".format(args.src))
+    # save_model(classifier, "ADDA-src-classifier-{}.pt".format(args.src))
 
     return encoder, classifier
 

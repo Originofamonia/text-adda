@@ -89,8 +89,8 @@ def train_tgt(args, src_encoder, tgt_encoder, critic,
                                            acc.item())
                 pbar.set_description(desc=desc)
 
-    torch.save(critic.state_dict(), os.path.join(
-        args.model_root, "ADDA-critic.pt"))
-    torch.save(tgt_encoder.state_dict(), os.path.join(
-        args.model_root, "ADDA-target-encoder.pt"))
+    # torch.save(critic.state_dict(), os.path.join(
+    #     args.model_root, "ADDA-critic.pt"))
+    # torch.save(tgt_encoder.state_dict(), os.path.join(
+    #     args.model_root, "ADDA-target-encoder.pt"))
     return tgt_encoder
