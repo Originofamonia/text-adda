@@ -65,7 +65,7 @@ def get_arguments():
                         help="batch size")
     parser.add_argument('--lr', type=float, default=1e-5,
                         help="src encoder lr")
-    parser.add_argument('--t_lr', type=float, default=1e-5, help="tgt encoder lr")
+    parser.add_argument('--t_lr', type=float, default=1e-4, help="tgt encoder lr")
     parser.add_argument('--c_lr', type=float, default=1e-4, help="critic lr")
     parser.add_argument('--beta1', type=float, default=0.5, help="beta1")
     parser.add_argument('--beta2', type=float, default=0.99, help="beta2")
