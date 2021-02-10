@@ -21,11 +21,11 @@ def train_tgt(args, src_encoder, tgt_encoder, critic,
     # setup criterion and optimizer
     criterion = nn.CrossEntropyLoss()
     optimizer_tgt = optim.Adam(tgt_encoder.parameters(),
-                               lr=args.t_lr, )
-    # betas=(args.beta1, args.beta2))
+                               lr=args.t_lr,
+                               betas=(args.beta1, args.beta2))
     optimizer_critic = optim.Adam(critic.parameters(),
-                                  lr=args.c_lr, )
-    # betas=(args.beta1, args.beta2))
+                                  lr=args.c_lr,
+                                  betas=(args.beta1, args.beta2))
     len_data_loader = min(len(src_data_loader), len(tgt_data_loader))
 
     for epoch in range(args.num_epochs):

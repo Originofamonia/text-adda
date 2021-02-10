@@ -57,7 +57,7 @@ def get_arguments():
     parser.add_argument('--seqlen', type=int, default=200, help="Specify maximum sequence length")
     parser.add_argument('--patience', type=int, default=5,
                         help="Specify patience of early stopping for pretrain")
-    parser.add_argument('--num_epochs_pre', type=int, default=11,
+    parser.add_argument('--num_epochs_pre', type=int, default=7,
                         help="Specify the number of epochs for pretrain")
     parser.add_argument('--batch_size', type=int, default=16, help="batch size")
     parser.add_argument('--lr', type=float, default=1e-5,help="src encoder lr")
