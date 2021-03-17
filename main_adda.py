@@ -54,10 +54,10 @@ def get_arguments():
     parser.add_argument('--tgt', type=str, default="dvd", choices=["books", "dvd", "electronics", "kitchen"],
                         help="Specify tgt dataset")
     parser.add_argument('--enc_train', default=False, action='store_true', help='Train source encoder')
-    parser.add_argument('--seqlen', type=int, default=200, help="Specify maximum sequence length")
+    parser.add_argument('--seqlen', type=int, default=128, help="Specify maximum sequence length")
     parser.add_argument('--patience', type=int, default=5,
                         help="Specify patience of early stopping for pretrain")
-    parser.add_argument('--batch_size', type=int, default=16, help="batch size")
+    parser.add_argument('--batch_size', type=int, default=64, help="batch size")
     parser.add_argument('--lr', type=float, default=1e-5, help="src encoder lr")
     parser.add_argument('--t_lr', type=float, default=1e-5, help="tgt encoder lr")
     parser.add_argument('--c_lr', type=float, default=1e-2, help="critic lr")

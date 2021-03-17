@@ -49,10 +49,10 @@ def train_src(args, encoder, classifier, train_loader, test_loader):
                 pbar.set_description(desc=desc)
 
         # eval model on test set
-        if epoch % args.eval_step_pre == 0:
-            print('Epoch [{}/{}]'.format(epoch, args.eval_step_pre))
-            eval_src(encoder, classifier, train_loader)
-            earlystop.update(eval_src(encoder, classifier, test_loader))
+        # if epoch % args.eval_step_pre == 0:
+        #     print('Epoch [{}/{}]'.format(epoch, args.eval_step_pre))
+        #     eval_src(encoder, classifier, train_loader)
+        #     earlystop.update(eval_src(encoder, classifier, test_loader))
 
         if earlystop.stop:
             break
