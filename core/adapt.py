@@ -10,7 +10,7 @@ from utils import make_cuda
 
 
 def train_tgt(args, src_encoder, tgt_encoder, critic,
-              src_data_loader, tgt_data_loader):
+              src_dataloader, tgt_dataloader):
     """Train encoder for target domain."""
 
     # set train state for Dropout and BN layers
@@ -26,11 +26,11 @@ def train_tgt(args, src_encoder, tgt_encoder, critic,
     optimizer_critic = optim.Adam(critic.parameters(),
                                   lr=args.c_lr,)
                                   # betas=(args.beta1, args.beta2))
-    len_data_loader = min(len(src_data_loader), len(tgt_data_loader))
+    len_data_loader = min(len(src_dataloader), len(tgt_dataloader))
 
     for epoch in range(args.num_epochs):
         # zip source and target data pair
-        pbar = tqdm(zip(src_data_loader, tgt_data_loader))
+        pbar = tqdm(zip(src_dataloader, tgt_dataloader))
         for step, ((reviews_src, _), (reviews_tgt, _)) in enumerate(pbar):
 
             # zero gradients for optimizer

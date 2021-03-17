@@ -57,12 +57,10 @@ def get_arguments():
     parser.add_argument('--seqlen', type=int, default=200, help="Specify maximum sequence length")
     parser.add_argument('--patience', type=int, default=5,
                         help="Specify patience of early stopping for pretrain")
-    parser.add_argument('--num_epochs_pre', type=int, default=7,
-                        help="Specify the number of epochs for pretrain")
     parser.add_argument('--batch_size', type=int, default=16, help="batch size")
-    parser.add_argument('--lr', type=float, default=1e-5,help="src encoder lr")
+    parser.add_argument('--lr', type=float, default=1e-5, help="src encoder lr")
     parser.add_argument('--t_lr', type=float, default=1e-5, help="tgt encoder lr")
-    parser.add_argument('--c_lr', type=float, default=1e-5, help="critic lr")
+    parser.add_argument('--c_lr', type=float, default=1e-2, help="critic lr")
     parser.add_argument('--beta1', type=float, default=0.5, help="beta1")
     parser.add_argument('--beta2', type=float, default=0.99, help="beta2")
     parser.add_argument('--log_step_pre', type=int, default=1,
@@ -71,7 +69,9 @@ def get_arguments():
                         help="Specify eval step size for pretrain")
     parser.add_argument('--save_step_pre', type=int, default=100,
                         help="Specify save step size for pretrain")
-    parser.add_argument('--num_epochs', type=int, default=11,
+    parser.add_argument('--num_epochs_pre', type=int, default=3,
+                        help="Specify the number of epochs for pretrain")
+    parser.add_argument('--num_epochs', type=int, default=3,
                         help="Specify the number of epochs for adaptation")
     parser.add_argument('--log_step', type=int, default=1,
                         help="Specify log step size for adaptation")
